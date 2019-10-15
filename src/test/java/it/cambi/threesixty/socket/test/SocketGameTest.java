@@ -15,7 +15,8 @@ import it.cambi.threesixty.socket.client.PlayerXClient;
 
 /**
  * @author luca
- *
+ * 
+ *         Test for a socket game, it checks if count down gets to zero after game is finished
  */
 public class SocketGameTest extends AbstractMain
 {

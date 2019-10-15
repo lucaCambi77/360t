@@ -10,10 +10,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import it.cambi.threesixty.message.Dispatcher;
 import it.cambi.threesixty.message.SocketDispatcher;
+import it.cambi.threesixty.players.Player;
 import it.cambi.threesixty.players.enums.PlayersEnum;
 
-public class InitiatorClient extends AbstractClient
+/**
+ * 
+ * @author luca
+ *
+ */
+public class InitiatorClient extends AbstractClient implements Player
 {
     private AtomicInteger countDown;
     private CountDownLatch latch;
@@ -40,18 +47,9 @@ public class InitiatorClient extends AbstractClient
                 {
                     try
                     {
-                        SocketDispatcher message = getMessages().take();
+                        takeMessage();
 
-                        System.out.println("Initiator says ... Message Received: " + message.getMessage());
-
-                        countDown.decrementAndGet();
-                        latch.countDown();
-
-                        Thread.sleep(1000);
-
-                        dispatcherInitiator.setMessage("Initiator is sending message number " + ++sentMessages);
-
-                        send(dispatcherInitiator);
+                        putMessage(dispatcherInitiator);
                     }
                     catch (InterruptedException | JsonProcessingException e)
                     {
@@ -59,9 +57,32 @@ public class InitiatorClient extends AbstractClient
                     }
                 }
             }
+
         };
         messageHandling.setDaemon(true);
         messageHandling.start();
+    }
+
+    @Override
+    public <T extends Dispatcher> void putMessage(T dispatcher) throws InterruptedException, JsonProcessingException
+    {
+        dispatcher.setMessage("Initiator is sending message number " + ++sentMessages);
+
+        send((SocketDispatcher) dispatcher);
+
+    }
+
+    @Override
+    public void takeMessage() throws InterruptedException
+    {
+        SocketDispatcher message = getMessages().take();
+
+        System.out.println("Initiator says ... Message Received: " + message.getMessage());
+
+        countDown.decrementAndGet();
+        latch.countDown();
+
+        Thread.sleep(1000);
     }
 
 }

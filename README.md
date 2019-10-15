@@ -18,3 +18,26 @@ Please include a maven project with the source code to build the jar and a shell
 Everything not specified is to be decided by you; everything specified is a hard requirement.
 
 You should send your source code as an archive attached to the e-mail; inline links for downloading will be ignored.
+
+## Install and run ##
+
+To use the application you need java 8 installed in your machine. 
+For the socket game, address 59090 must not be in use, otherwise change the address in the Constant class to one that can be used to run the application
+
+There is a default profiles with which you can run the application
+
+To install 
+
+	- mvn clean install
+
+To run 
+
+There are two games to play (both of sh files must have execute rights, see command chmod +x)
+
+1) Game based on simple threads :
+
+	./threadgame.sh
+
+2) Game based on socket communication :
+
+	./socketgame.sh

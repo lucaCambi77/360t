@@ -8,6 +8,9 @@ import it.cambi.threesixty.players.enums.PlayersEnum;
 /**
  * @author luca
  *
+ *         Dispatcher class user to share messages with the queues
+ * 
+ *         {@link SocketDispatcher } inherits from this class and it can also define a socket string id as a unique definition of a Socket in the game
  */
 public class Dispatcher
 {

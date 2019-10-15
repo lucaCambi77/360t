@@ -14,6 +14,7 @@ import it.cambi.threesixty.message.Dispatcher;
 /**
  * @author luca
  *
+ *         Abstract main class used to define common objects for both games and also useful for tests
  */
 public class AbstractMain
 {

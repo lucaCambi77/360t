@@ -10,7 +10,7 @@ import it.cambi.threesixty.constant.Constant;
 import it.cambi.threesixty.message.Dispatcher;
 import it.cambi.threesixty.message.SocketDispatcher;
 import it.cambi.threesixty.players.Initiator;
-import it.cambi.threesixty.players.Player;
+import it.cambi.threesixty.players.PlayerX;
 import it.cambi.threesixty.players.enums.PlayersEnum;
 import it.cambi.threesixty.socket.client.InitiatorClient;
 import it.cambi.threesixty.socket.client.PlayerXClient;
@@ -18,7 +18,16 @@ import it.cambi.threesixty.socket.server.SocketServer;
 
 /**
  * @author luca
- *
+ * 
+ *         Main entry point of the application with 2 different games depending on the args input.
+ * 
+ *         {@link #playSocket} will start a game simulating two client communicating over a network with sockets
+ * 
+ *         {@link #playThread} will start a game of two Thread communicating in with queues
+ * 
+ *         Both games anyway are based on a count down that will stop after required condition is satisfied for the initiator.
+ * 
+ *         {@link CountDownLatch} will help to wait for the condition to be completed
  */
 public class Main extends AbstractMain
 {
@@ -55,12 +64,12 @@ public class Main extends AbstractMain
 
     }
 
-    public void playSocket() throws Exception
+    private void playSocket() throws Exception
     {
 
-        InitiatorClient initiatorClient = new InitiatorClient("127.0.0.1", Constant.socketPort, getLatch(), getCountDown());
+        InitiatorClient initiatorClient = new InitiatorClient(Constant.localhost, Constant.socketPort, getLatch(), getCountDown());
 
-        play(initiatorClient, new PlayerXClient("127.0.0.1", Constant.socketPort), getLatch());
+        play(initiatorClient, new PlayerXClient(Constant.localhost, Constant.socketPort), getLatch());
     }
 
     public void play(InitiatorClient initiator, PlayerXClient playerX, CountDownLatch latch) throws InterruptedException, IOException
@@ -71,7 +80,7 @@ public class Main extends AbstractMain
         initiatorDispatcher.setPlayerType(PlayersEnum.INITIATOR);
         initiatorDispatcher.setSocket(initiator.getSocketString());
 
-        initiatorDispatcher.setMessage("Hello from InitiatorClient");
+        initiatorDispatcher.setMessage("Message number 1 form InitiatorClient : Hello world!");
 
         initiator.send(initiatorDispatcher);
 
@@ -84,12 +93,12 @@ public class Main extends AbstractMain
     private void playThread() throws InterruptedException
     {
         Initiator inititator = new Initiator(getInitiatorQueue(), getCountDown(), getPlayerXQueue(), getLatch());
-        Player playerX = new Player(getPlayerXQueue(), getInitiatorQueue());
+        PlayerX playerX = new PlayerX(getPlayerXQueue(), getInitiatorQueue());
 
         play(inititator, playerX, getLatch());
     }
 
-    public void play(Initiator initiator, Player playerX, CountDownLatch latch) throws InterruptedException
+    public void play(Initiator initiator, PlayerX playerX, CountDownLatch latch) throws InterruptedException
     {
         System.out.println("Game started ...");
 
@@ -98,7 +107,7 @@ public class Main extends AbstractMain
          */
         Dispatcher dispatcher = new Dispatcher();
         dispatcher.setPlayerType(PlayersEnum.INITIATOR);
-        dispatcher.setMessage("Hello from Initiator");
+        dispatcher.setMessage("Message number 1 from Initiator : Hello world!");
         initiator.putMessage(dispatcher);
 
         /**

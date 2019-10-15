@@ -13,8 +13,10 @@ import it.cambi.threesixty.players.enums.PlayersEnum;
 /**
  * @author luca
  *
+ *         Initiator player of the game communicating with {@link PlayerX} It loops until count down gets to zero and also keeps alive the main thread
+ *         with a {@link CountDownLatch} until required condition is satisfied
  */
-public class Initiator extends Thread
+public class Initiator extends Thread implements Player
 {
 
     private AtomicInteger countDown;
@@ -77,7 +79,8 @@ public class Initiator extends Thread
     /**
      * @throws InterruptedException
      */
-    private void takeMessage() throws InterruptedException
+    @Override
+    public void takeMessage() throws InterruptedException
     {
         System.out.println(Thread.currentThread().getName() + " is waiting for messages");
 
@@ -89,6 +92,7 @@ public class Initiator extends Thread
     /**
      * @throws InterruptedException
      */
+    @Override
     public void putMessage(Dispatcher dispatcher) throws InterruptedException
     {
         System.out.println(Thread.currentThread().getName() + " is sending a message");

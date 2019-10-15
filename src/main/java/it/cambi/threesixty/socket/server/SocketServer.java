@@ -23,6 +23,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.cambi.threesixty.message.SocketDispatcher;
 
+/**
+ * 
+ * @author luca
+ *
+ *         A basic socket server that listen to new connections and define a map of {@link ConnectionClient} that is able to share messages with the
+ *         opposite {@link ConnectionServer}. Broadcast messages to all consumers except the one who sent the message {@link sendAll}
+ */
 public class SocketServer
 {
     private Map<String, ConnectionToClient> clientList;
@@ -127,7 +134,7 @@ public class SocketServer
                     }
                 }
             };
-            
+
             read.setDaemon(true);
             read.start();
         }

@@ -17,6 +17,8 @@ import it.cambi.threesixty.message.SocketDispatcher;
 
 /**
  * @author luca
+ * 
+ *         Abstract client where an instance of {@link ConnectionServer} can be defined to stream data over the {@link SocketServer}
  *
  */
 public abstract class AbstractClient
