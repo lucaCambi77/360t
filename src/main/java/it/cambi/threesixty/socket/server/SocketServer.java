@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.cambi.threesixty.socket.test;
+package it.cambi.threesixty.socket.server;
 
 import java.io.BufferedReader;
 /**
@@ -62,6 +62,7 @@ public class SocketServer
             }
         };
 
+        accept.setDaemon(true);
         accept.start();
 
         Thread messageHandling = new Thread()
@@ -86,6 +87,7 @@ public class SocketServer
             }
         };
 
+        messageHandling.setDaemon(true);
         messageHandling.start();
 
     }
@@ -125,7 +127,8 @@ public class SocketServer
                     }
                 }
             };
-
+            
+            read.setDaemon(true);
             read.start();
         }
 

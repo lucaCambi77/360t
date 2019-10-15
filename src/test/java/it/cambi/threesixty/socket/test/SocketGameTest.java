@@ -3,40 +3,38 @@
  */
 package it.cambi.threesixty.socket.test;
 
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import it.cambi.threesixty.message.SocketDispatcher;
-import it.cambi.threesixty.players.enums.PlayersEnum;
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
+
+import it.cambi.threesixty.AbstractMain;
+import it.cambi.threesixty.Main;
+import it.cambi.threesixty.constant.Constant;
+import it.cambi.threesixty.socket.client.InitiatorClient;
+import it.cambi.threesixty.socket.client.PlayerXClient;
 
 /**
  * @author luca
  *
  */
-public class SocketGameTest
+public class SocketGameTest extends AbstractMain
 {
 
-    public static void main(String[] args) throws IOException, InterruptedException
+    private Main main = new Main();
+
+    @Test
+    public void testSocketGame() throws IOException, InterruptedException
     {
 
-        new SocketServer(59090);
+        main.startServer();
 
-        CountDownLatch latch = new CountDownLatch(10);
+        InitiatorClient initiatorClient = new InitiatorClient("127.0.0.1", Constant.socketPort, getLatch(), getCountDown());
+        main.play(initiatorClient, new PlayerXClient("127.0.0.1", Constant.socketPort), getLatch());
 
-        InitiatorClient initiator = new InitiatorClient("127.0.0.1", 59090, latch);
-        new PlayerXClient("127.0.0.1", 59090);
+        assertEquals(0, getCountDown().get());
 
-        SocketDispatcher initiatorDispatcher = new SocketDispatcher();
-        initiatorDispatcher.setPlayerType(PlayersEnum.INITIATOR);
-        initiatorDispatcher.setSocket(initiator.getSocketString());
-
-        initiatorDispatcher.setMessage("Hello from InitiatorClient");
-
-        initiator.send(initiatorDispatcher);
-
-        latch.await();
-
-        System.out.println("Game over");
     }
 
 }

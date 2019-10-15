@@ -18,6 +18,7 @@ public class Player extends Thread
     private BlockingQueue<Dispatcher> queue;
     private BlockingQueue<Dispatcher> othersQueue;
     private volatile boolean isGame = true;
+    private int sentMessages = 0;
 
     private Object lock = new Object();
 
@@ -49,10 +50,11 @@ public class Player extends Thread
                 {
                     takeMessage();
 
-                    dispatcher.setMessage(Thread.currentThread().getName() + " is sending message number ");
+                    dispatcher.setMessage(Thread.currentThread().getName() + " already sent " + sentMessages + " messages");
 
                     putMessage(dispatcher);
 
+                    sentMessages++;
                     Thread.sleep(1000);
 
                 }
@@ -85,7 +87,7 @@ public class Player extends Thread
         if (!dispatcher.isGame())
             stopGame();
 
-        System.out.println(Thread.currentThread().getName() + " ha trovo un messaggio : " + dispatcher.getMessage());
+        System.out.println(Thread.currentThread().getName() + " has found a new message : " + dispatcher.getMessage());
     }
 
     private void stopGame()

@@ -22,6 +22,7 @@ public class Initiator extends Thread
     private BlockingQueue<Dispatcher> queue;
     private BlockingQueue<Dispatcher> playerXQueue;
     private CountDownLatch latch;
+    private int sentMessages = 1;
 
     private Object lock = new Object();
 
@@ -60,7 +61,8 @@ public class Initiator extends Thread
 
                     Thread.sleep(1000);
 
-                    dispatcher.setMessage(Thread.currentThread().getName() + " is sending message number " + countDown.get());
+                    dispatcher.setMessage(Thread.currentThread().getName() + " already sent " + sentMessages + " messages");
+                    sentMessages++;
 
                     putMessage(dispatcher);
 
@@ -78,9 +80,11 @@ public class Initiator extends Thread
      */
     private void takeMessage() throws InterruptedException
     {
+        System.out.println(Thread.currentThread().getName() + " is waiting for messages");
+
         Dispatcher dispatcher = queue.take();
 
-        System.out.println(Thread.currentThread().getName() + " ha trovo un messaggio in coda : " + dispatcher.getMessage());
+        System.out.println(Thread.currentThread().getName() + " has found a new message : " + dispatcher.getMessage());
     }
 
     /**

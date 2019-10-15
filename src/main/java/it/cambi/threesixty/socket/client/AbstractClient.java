@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.cambi.threesixty.socket.test;
+package it.cambi.threesixty.socket.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,50 +14,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.cambi.threesixty.message.SocketDispatcher;
-import it.cambi.threesixty.players.enums.PlayersEnum;
 
-public class PlayerXClient
+/**
+ * @author luca
+ *
+ */
+public abstract class AbstractClient
 {
     private ConnectionToServer server;
     private LinkedBlockingQueue<SocketDispatcher> messages;
     private Socket socket;
     private ObjectMapper objectMapper = new ObjectMapper();
-
-    public PlayerXClient(String IPAddress, int port) throws IOException
-    {
-        socket = new Socket(IPAddress, port);
-        messages = new LinkedBlockingQueue<SocketDispatcher>();
-        server = new ConnectionToServer(socket);
-
-        SocketDispatcher dispatcherInitiator = new SocketDispatcher();
-        dispatcherInitiator.setPlayerType(PlayersEnum.PLAYERX);
-        dispatcherInitiator.setSocket(getSocketString());
-
-        Thread messageHandling = new Thread()
-        {
-            public void run()
-            {
-                while (true)
-                {
-                    try
-                    {
-                        SocketDispatcher message = messages.take();
-
-                        System.out.println("PlayerX says ... Message Received: " + message.getMessage());
-
-                        dispatcherInitiator.setMessage("PlayerX is sending message number ");
-
-                        send(dispatcherInitiator);
-                    }
-                    catch (InterruptedException | JsonProcessingException e)
-                    {
-                    }
-                }
-            }
-        };
-
-        messageHandling.start();
-    }
 
     class ConnectionToServer
     {
@@ -68,8 +35,8 @@ public class PlayerXClient
         ConnectionToServer(Socket socket) throws IOException
         {
             this.socket = socket;
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.out = new PrintWriter(socket.getOutputStream(), true);
 
             Thread read = new Thread()
             {
@@ -89,7 +56,7 @@ public class PlayerXClient
                     }
                 }
             };
-
+            read.setDaemon(true);
             read.start();
         }
 
@@ -108,5 +75,35 @@ public class PlayerXClient
     public String getSocketString()
     {
         return socket.getInetAddress().toString() + socket.getLocalPort() + socket.getPort();
+    }
+
+    public ConnectionToServer getServer()
+    {
+        return server;
+    }
+
+    public LinkedBlockingQueue<SocketDispatcher> getMessages()
+    {
+        return messages;
+    }
+
+    public Socket getSocket()
+    {
+        return socket;
+    }
+
+    public void setServer(ConnectionToServer server)
+    {
+        this.server = server;
+    }
+
+    public void setMessages(LinkedBlockingQueue<SocketDispatcher> messages)
+    {
+        this.messages = messages;
+    }
+
+    public void setSocket(Socket socket)
+    {
+        this.socket = socket;
     }
 }
