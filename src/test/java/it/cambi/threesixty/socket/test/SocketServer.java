@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,8 +29,6 @@ public class SocketServer
     private LinkedBlockingQueue<SocketDispatcher> messages;
     private ServerSocket serverSocket;
     private ObjectMapper objectMapper = new ObjectMapper();
-
-    private AtomicInteger countDown = new AtomicInteger(9);
 
     /**
      * @throws IOException
@@ -76,7 +73,7 @@ public class SocketServer
                     try
                     {
                         SocketDispatcher message = messages.take();
-                        // Do some handling here...
+
                         System.out.println("Server says ... Received from : " + message.getPlayerType().getDescription() + " , message : "
                                 + message.getMessage());
 

@@ -19,14 +19,14 @@ import it.cambi.threesixty.players.enums.PlayersEnum;
 public class PlayerXClient
 {
     private ConnectionToServer server;
-    private LinkedBlockingQueue<String> messages;
+    private LinkedBlockingQueue<SocketDispatcher> messages;
     private Socket socket;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public PlayerXClient(String IPAddress, int port) throws IOException
     {
         socket = new Socket(IPAddress, port);
-        messages = new LinkedBlockingQueue<String>();
+        messages = new LinkedBlockingQueue<SocketDispatcher>();
         server = new ConnectionToServer(socket);
 
         SocketDispatcher dispatcherInitiator = new SocketDispatcher();
@@ -41,9 +41,9 @@ public class PlayerXClient
                 {
                     try
                     {
-                        Object message = messages.take();
+                        SocketDispatcher message = messages.take();
                         // Do some handling here...
-                        System.out.println("PlayerX says ... Message Received: " + message);
+                        System.out.println("PlayerX says ... Message Received: " + message.getMessage());
 
                         dispatcherInitiator.setMessage("PlayerX is sending message number ");
 
@@ -79,7 +79,7 @@ public class PlayerXClient
                     {
                         try
                         {
-                            String obj = in.readLine();
+                            SocketDispatcher obj = objectMapper.readValue(in.readLine(), SocketDispatcher.class);
                             messages.put(obj);
                         }
                         catch (IOException | InterruptedException e)

@@ -43,7 +43,7 @@ public class InitiatorClient
                     {
                         SocketDispatcher message = messages.take();
 
-                        System.out.println("Initiator says ... Message Received: " + message);
+                        System.out.println("Initiator says ... Message Received: " + message.getMessage());
 
                         dispatcherInitiator.setMessage("Initiator is sending message number ");
 

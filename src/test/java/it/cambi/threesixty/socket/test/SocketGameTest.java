@@ -23,13 +23,13 @@ public class SocketGameTest
         InitiatorClient initiator = new InitiatorClient("127.0.0.1", 59090);
         new PlayerXClient("127.0.0.1", 59090);
 
-        SocketDispatcher dispatcherInitiator = new SocketDispatcher();
-        dispatcherInitiator.setPlayerType(PlayersEnum.INITIATOR);
-        dispatcherInitiator.setSocket(initiator.getSocketString());
+        SocketDispatcher initiatorDispatcher = new SocketDispatcher();
+        initiatorDispatcher.setPlayerType(PlayersEnum.INITIATOR);
+        initiatorDispatcher.setSocket(initiator.getSocketString());
 
-        dispatcherInitiator.setMessage("Hello from InitiatorClient");
+        initiatorDispatcher.setMessage("Hello from InitiatorClient");
 
-        initiator.send(dispatcherInitiator);
+        initiator.send(initiatorDispatcher);
 
     }
 
