@@ -49,11 +49,17 @@ public class Main
 
     public void play(Initiator initiator, Player playerX, CountDownLatch latch) throws InterruptedException
     {
+        /**
+         * Initiator send first message
+         */
         Dispatcher dispatcher = new Dispatcher();
         dispatcher.setPlayerType(PlayersEnum.INITIATOR);
         dispatcher.setMessage("Hello from Initiator");
         initiator.putMessage(dispatcher);
 
+        /**
+         * Start threads and wait until count down latch goes to zero
+         */
         initiator.start();
         playerX.start();
 
