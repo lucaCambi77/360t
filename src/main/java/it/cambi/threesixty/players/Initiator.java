@@ -57,13 +57,13 @@ public class Initiator extends Thread
 
                     countDown.decrementAndGet();
                     latch.countDown();
-                    
+
+                    Thread.sleep(1000);
+
                     dispatcher.setMessage(Thread.currentThread().getName() + " is sending message number " + countDown.get());
 
                     putMessage(dispatcher);
 
-
-                    Thread.sleep(1000);
                 }
             }
             catch (InterruptedException e)

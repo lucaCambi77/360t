@@ -42,7 +42,7 @@ public class PlayerXClient
                     try
                     {
                         SocketDispatcher message = messages.take();
-                        // Do some handling here...
+
                         System.out.println("PlayerX says ... Message Received: " + message.getMessage());
 
                         dispatcherInitiator.setMessage("PlayerX is sending message number ");

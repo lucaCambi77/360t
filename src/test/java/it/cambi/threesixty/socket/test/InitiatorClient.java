@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,16 +21,19 @@ import it.cambi.threesixty.players.enums.PlayersEnum;
 public class InitiatorClient
 {
     private AtomicInteger countDown = new AtomicInteger(10);
+    private CountDownLatch latch;
+
     private ConnectionToServer server;
     private LinkedBlockingQueue<SocketDispatcher> messages;
     private Socket socket;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public InitiatorClient(String IPAddress, int port) throws IOException
+    public InitiatorClient(String IPAddress, int port, CountDownLatch latchIn) throws IOException
     {
-        socket = new Socket(IPAddress, port);
-        messages = new LinkedBlockingQueue<SocketDispatcher>();
-        server = new ConnectionToServer(socket);
+        this.socket = new Socket(IPAddress, port);
+        this.messages = new LinkedBlockingQueue<SocketDispatcher>();
+        this.server = new ConnectionToServer(socket);
+        this.latch = latchIn;
 
         SocketDispatcher dispatcherInitiator = new SocketDispatcher();
         dispatcherInitiator.setPlayerType(PlayersEnum.INITIATOR);
@@ -47,9 +51,12 @@ public class InitiatorClient
 
                         System.out.println("Initiator says ... Message Received: " + message.getMessage());
 
-                        dispatcherInitiator.setMessage("Initiator is sending message number ");
-
                         countDown.decrementAndGet();
+                        latch.countDown();
+
+                        Thread.sleep(1000);
+
+                        dispatcherInitiator.setMessage("Initiator is sending message number ");
 
                         send(dispatcherInitiator);
                     }

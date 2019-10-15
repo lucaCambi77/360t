@@ -38,10 +38,6 @@ public class Main
 
     }
 
-    /**
-     * @param initiator
-     * @param otherPlayer
-     */
     private void play() throws InterruptedException
     {
         play(new Initiator(queue, countDown, playerXQueue, latch), new Player(playerXQueue, queue), latch);
@@ -49,6 +45,8 @@ public class Main
 
     public void play(Initiator initiator, Player playerX, CountDownLatch latch) throws InterruptedException
     {
+        System.out.println("Game started ...");
+
         /**
          * Initiator send first message
          */
@@ -65,7 +63,9 @@ public class Main
 
         latch.await();
 
-        System.out.println(PlayersEnum.INITIATOR.getDescription() + " ha terminato il gioco...");
+        System.out.println(PlayersEnum.INITIATOR.getDescription() + " terminated the game ...");
+
+        System.out.println("... Game over!");
 
     }
 }
