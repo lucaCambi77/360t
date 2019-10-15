@@ -5,6 +5,9 @@ package it.cambi.threesixty.socket.test;
 
 import java.io.IOException;
 
+import it.cambi.threesixty.message.SocketDispatcher;
+import it.cambi.threesixty.players.enums.PlayersEnum;
+
 /**
  * @author luca
  *
@@ -14,19 +17,20 @@ public class SocketGameTest
 
     public static void main(String[] args) throws IOException
     {
-        new DataServer(59090);
+
+        new SocketServer(59090);
 
         InitiatorClient initiator = new InitiatorClient("127.0.0.1", 59090);
+        new PlayerXClient("127.0.0.1", 59090);
 
-        PlayerXClient playerX = new PlayerXClient("127.0.0.1", 59090);
+        SocketDispatcher dispatcherInitiator = new SocketDispatcher();
+        dispatcherInitiator.setPlayerType(PlayersEnum.INITIATOR);
+        dispatcherInitiator.setSocket(initiator.getSocketString());
 
-        initiator.send("Hello from InitiatorClient");
+        dispatcherInitiator.setMessage("Hello from InitiatorClient");
 
-        initiator.send("Hello from InitiatorClient 2");
+        initiator.send(dispatcherInitiator);
 
-        playerX.send("Hello from PlayerXClient");
-
-        playerX.send("Hello from PlayerXClient 2");
     }
 
 }

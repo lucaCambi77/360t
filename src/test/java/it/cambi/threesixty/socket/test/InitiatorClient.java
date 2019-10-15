@@ -10,17 +10,28 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import it.cambi.threesixty.message.SocketDispatcher;
+import it.cambi.threesixty.players.enums.PlayersEnum;
+
 public class InitiatorClient
 {
     private ConnectionToServer server;
-    private LinkedBlockingQueue<String> messages;
+    private LinkedBlockingQueue<SocketDispatcher> messages;
     private Socket socket;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public InitiatorClient(String IPAddress, int port) throws IOException
     {
         socket = new Socket(IPAddress, port);
-        messages = new LinkedBlockingQueue<String>();
+        messages = new LinkedBlockingQueue<SocketDispatcher>();
         server = new ConnectionToServer(socket);
+
+        SocketDispatcher dispatcherInitiator = new SocketDispatcher();
+        dispatcherInitiator.setPlayerType(PlayersEnum.INITIATOR);
+        dispatcherInitiator.setSocket(getSocketString());
 
         Thread messageHandling = new Thread()
         {
@@ -30,11 +41,15 @@ public class InitiatorClient
                 {
                     try
                     {
-                        Object message = messages.take();
-                        // Do some handling here...
+                        SocketDispatcher message = messages.take();
+
                         System.out.println("Initiator says ... Message Received: " + message);
+
+                        dispatcherInitiator.setMessage("Initiator is sending message number ");
+
+                        send(dispatcherInitiator);
                     }
-                    catch (InterruptedException e)
+                    catch (InterruptedException | JsonProcessingException e)
                     {
                     }
                 }
@@ -64,7 +79,7 @@ public class InitiatorClient
                     {
                         try
                         {
-                            String obj = in.readLine();
+                            SocketDispatcher obj = objectMapper.readValue(in.readLine(), SocketDispatcher.class);
                             messages.put(obj);
                         }
                         catch (IOException | InterruptedException e)
@@ -78,15 +93,20 @@ public class InitiatorClient
             read.start();
         }
 
-        private void write(String obj)
+        private void write(SocketDispatcher obj) throws JsonProcessingException
         {
-            out.println(obj);
+            out.println(objectMapper.writeValueAsString(obj));
         }
 
     }
 
-    public void send(String obj)
+    public void send(SocketDispatcher obj) throws JsonProcessingException
     {
         server.write(obj);
+    }
+
+    public String getSocketString()
+    {
+        return socket.getInetAddress().toString() + socket.getLocalPort() + socket.getPort();
     }
 }

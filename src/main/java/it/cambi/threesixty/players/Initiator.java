@@ -46,7 +46,7 @@ public class Initiator extends Thread
 
         System.out.println(PlayersEnum.INITIATOR.getDescription() + " thread running");
 
-        while (countDown.get() >= 0)
+        while (countDown.get() > 0)
         {
             try
             {
@@ -61,6 +61,8 @@ public class Initiator extends Thread
                     latch.countDown();
 
                     putMessage(dispatcher);
+
+                    Thread.sleep(1000);
                 }
             }
             catch (InterruptedException e)
@@ -69,6 +71,7 @@ public class Initiator extends Thread
         }
 
         System.out.println("Initiator ha terminato il gioco...");
+        latch.countDown();
     }
 
     /**
@@ -86,7 +89,6 @@ public class Initiator extends Thread
      */
     public void putMessage(Dispatcher dispatcher) throws InterruptedException
     {
-        Thread.sleep(1000);
         System.out.println(Thread.currentThread().getName() + " is sending a message");
 
         playerXQueue.add(dispatcher);

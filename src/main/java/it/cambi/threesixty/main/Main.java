@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import it.cambi.threesixty.constant.Constant;
 import it.cambi.threesixty.message.Dispatcher;
 import it.cambi.threesixty.players.Initiator;
 import it.cambi.threesixty.players.Player;
@@ -19,10 +20,9 @@ import it.cambi.threesixty.players.enums.PlayersEnum;
  */
 public class Main
 {
-    private final static int numberOfMessages = 10;
-    private BlockingQueue<Dispatcher> queue = new ArrayBlockingQueue<>(numberOfMessages);
-    private BlockingQueue<Dispatcher> playerXQueue = new ArrayBlockingQueue<>(numberOfMessages);
-    private AtomicInteger countDown = new AtomicInteger(numberOfMessages);
+    private BlockingQueue<Dispatcher> queue = new ArrayBlockingQueue<>(Constant.numberOfMessages);
+    private BlockingQueue<Dispatcher> playerXQueue = new ArrayBlockingQueue<>(Constant.numberOfMessages);
+    private AtomicInteger countDown = new AtomicInteger(Constant.numberOfMessages);
 
     private static Main instance = new Main();
 
@@ -44,7 +44,7 @@ public class Main
     private void play() throws InterruptedException
     {
 
-        Initiator initiator = new Initiator(queue, countDown, playerXQueue, new CountDownLatch(numberOfMessages));
+        Initiator initiator = new Initiator(queue, countDown, playerXQueue, new CountDownLatch(Constant.countDownlLatch));
         Player playerX = new Player(playerXQueue, queue);
 
         Dispatcher dispatcher = new Dispatcher();

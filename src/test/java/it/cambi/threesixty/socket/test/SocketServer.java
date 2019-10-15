@@ -13,25 +13,33 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DataServer
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import it.cambi.threesixty.message.SocketDispatcher;
+
+public class SocketServer
 {
-    private ArrayList<ConnectionToClient> clientList;
-    private LinkedBlockingQueue<Object> messages;
+    private Map<String, ConnectionToClient> clientList;
+    private LinkedBlockingQueue<SocketDispatcher> messages;
     private ServerSocket serverSocket;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     private AtomicInteger countDown = new AtomicInteger(9);
 
     /**
      * @throws IOException
      */
-    public DataServer(int port) throws IOException
+    public SocketServer(int port) throws IOException
     {
-        clientList = new ArrayList<ConnectionToClient>();
-        messages = new LinkedBlockingQueue<Object>();
+        clientList = new HashMap<String, ConnectionToClient>();
+        messages = new LinkedBlockingQueue<SocketDispatcher>();
         serverSocket = new ServerSocket(port);
 
         Thread accept = new Thread()
@@ -45,7 +53,8 @@ public class DataServer
                         System.out.println("Server listening on port: " + port);
 
                         Socket s = serverSocket.accept();
-                        clientList.add(new ConnectionToClient(s));
+                        clientList.put(s.getInetAddress().toString() + s.getPort() + s.getLocalPort(), new ConnectionToClient(s));
+
                         System.out.println("Connected clients ... " + clientList.size());
                     }
                     catch (IOException e)
@@ -66,11 +75,14 @@ public class DataServer
                 {
                     try
                     {
-                        Object message = messages.take();
+                        SocketDispatcher message = messages.take();
                         // Do some handling here...
-                        System.out.println("Server says ... Message Received: " + message);
+                        System.out.println("Server says ... Received from : " + message.getPlayerType().getDescription() + " , message : "
+                                + message.getMessage());
+
+                        sendToAll(message);
                     }
-                    catch (InterruptedException e)
+                    catch (InterruptedException | JsonProcessingException e)
                     {
                     }
                 }
@@ -107,7 +119,7 @@ public class DataServer
                         try
                         {
                             String obj = in.readLine();
-                            messages.put(obj);
+                            messages.put(objectMapper.readValue(obj, SocketDispatcher.class));
                         }
                         catch (IOException | InterruptedException e)
                         {
@@ -120,21 +132,17 @@ public class DataServer
             read.start();
         }
 
-        public void write(String obj)
+        public void write(SocketDispatcher obj) throws JsonProcessingException
         {
 
-            out.println(obj);
+            out.println(objectMapper.writeValueAsString(obj));
         }
     }
 
-    public void sendToOne(int index, String message) throws IndexOutOfBoundsException
+    public void sendToAll(SocketDispatcher message) throws JsonProcessingException
     {
-        clientList.get(index).write(message);
-    }
-
-    public void sendToAll(String message)
-    {
-        for (ConnectionToClient client : clientList)
-            client.write(message);
+        for (Entry<String, ConnectionToClient> client : clientList.entrySet())
+            if (client.getKey().compareTo(message.getSocket()) != 0)
+                client.getValue().write(message);
     }
 }
