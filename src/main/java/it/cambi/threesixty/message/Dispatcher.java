@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.cambi.threesixty.socket.test;
+package it.cambi.threesixty.message;
 
 import it.cambi.threesixty.players.enums.PlayersEnum;
 
@@ -9,17 +9,18 @@ import it.cambi.threesixty.players.enums.PlayersEnum;
  * @author luca
  *
  */
-public class Message
+public class Dispatcher
 {
 
     private String message;
     private PlayersEnum playerType;
+    private boolean isGame = true;
 
-    public Message()
+    public Dispatcher()
     {
     }
 
-    public Message(PlayersEnum playerType)
+    public Dispatcher(PlayersEnum playerType)
     {
         this.playerType = playerType;
     }
@@ -42,5 +43,15 @@ public class Message
     public void setPlayerType(PlayersEnum playerType)
     {
         this.playerType = playerType;
+    }
+
+    public boolean isGame()
+    {
+        return isGame;
+    }
+
+    public void setGame(boolean isGame)
+    {
+        this.isGame = isGame;
     }
 }

@@ -32,7 +32,7 @@ public class InitiatorClient
                     {
                         Object message = messages.take();
                         // Do some handling here...
-                        System.out.println("Message Received: " + message);
+                        System.out.println("Initiator says ... Message Received: " + message);
                     }
                     catch (InterruptedException e)
                     {
@@ -54,7 +54,7 @@ public class InitiatorClient
         {
             this.socket = socket;
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream());
+            out = new PrintWriter(socket.getOutputStream(), true);
 
             Thread read = new Thread()
             {
@@ -78,14 +78,14 @@ public class InitiatorClient
             read.start();
         }
 
-        private void write(Object obj)
+        private void write(String obj)
         {
             out.println(obj);
         }
 
     }
 
-    public void send(Object obj)
+    public void send(String obj)
     {
         server.write(obj);
     }

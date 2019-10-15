@@ -8,45 +8,85 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import it.cambi.threesixty.players.enums.PlayersEnum;
-
-/**
- * A command line client for the date server. Requires the IP address of the server as the sole argument. Exits after printing the response.
- */
 public class PlayerXClient
 {
-    private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
-    private ObjectMapper mapper = new ObjectMapper();
+    private ConnectionToServer server;
+    private LinkedBlockingQueue<String> messages;
+    private Socket socket;
 
-    public static void main(String[] args) throws IOException
+    public PlayerXClient(String IPAddress, int port) throws IOException
     {
+        socket = new Socket(IPAddress, port);
+        messages = new LinkedBlockingQueue<String>();
+        server = new ConnectionToServer(socket);
 
-        PlayerXClient client = new PlayerXClient();
-        client.startConnection("127.0.0.1", 59090);
+        Thread messageHandling = new Thread()
+        {
+            public void run()
+            {
+                while (true)
+                {
+                    try
+                    {
+                        Object message = messages.take();
+                        // Do some handling here...
+                        System.out.println("Initiator says ... Message Received: " + message);
+                    }
+                    catch (InterruptedException e)
+                    {
+                    }
+                }
+            }
+        };
 
-        Message message = new Message(PlayersEnum.PLAYERX);
-        message.setMessage("Topa");
-
-        System.out.println("Server response: " + client.sendMessage(message));
+        messageHandling.start();
     }
 
-    public void startConnection(String ip, int port) throws UnknownHostException, IOException
+    class ConnectionToServer
     {
-        clientSocket = new Socket(ip, port);
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        BufferedReader in;
+        PrintWriter out;
+        Socket socket;
+
+        ConnectionToServer(Socket socket) throws IOException
+        {
+            this.socket = socket;
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+
+            Thread read = new Thread()
+            {
+                public void run()
+                {
+                    while (true)
+                    {
+                        try
+                        {
+                            String obj = in.readLine();
+                            messages.put(obj);
+                        }
+                        catch (IOException | InterruptedException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+
+            read.start();
+        }
+
+        private void write(String obj)
+        {
+            out.println(obj);
+        }
+
     }
 
-    public <T extends Message> String sendMessage(T msg) throws IOException
+    public void send(String obj)
     {
-        out.println(mapper.writeValueAsString(msg));
-        String resp = in.readLine();
-        return resp;
+        server.write(obj);
     }
 }

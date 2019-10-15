@@ -7,6 +7,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import it.cambi.threesixty.message.Dispatcher;
+import it.cambi.threesixty.players.enums.PlayersEnum;
+
 /**
  * @author luca
  *
@@ -16,8 +19,8 @@ public class Initiator extends Thread
 
     private AtomicInteger countDown;
 
-    private BlockingQueue<String> queue;
-    private BlockingQueue<String> playerXQueue;
+    private BlockingQueue<Dispatcher> queue;
+    private BlockingQueue<Dispatcher> playerXQueue;
     private CountDownLatch latch;
 
     private Object lock = new Object();
@@ -25,7 +28,7 @@ public class Initiator extends Thread
     /**
      * 
      */
-    public Initiator(BlockingQueue<String> queue, AtomicInteger countDown, BlockingQueue<String> playerXQueue, CountDownLatch latch)
+    public Initiator(BlockingQueue<Dispatcher> queue, AtomicInteger countDown, BlockingQueue<Dispatcher> playerXQueue, CountDownLatch latch)
     {
         this.queue = queue;
         this.countDown = countDown;
@@ -36,9 +39,13 @@ public class Initiator extends Thread
     @Override
     public void run()
     {
-        Thread.currentThread().setName("Initiator");
+        Thread.currentThread().setName(PlayersEnum.INITIATOR.getDescription());
 
-        System.out.println("Avvio l'initiator");
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.setPlayerType(PlayersEnum.INITIATOR);
+
+        System.out.println(PlayersEnum.INITIATOR.getDescription() + " thread running");
+
         while (countDown.get() >= 0)
         {
             try
@@ -46,15 +53,14 @@ public class Initiator extends Thread
                 synchronized (lock)
                 {
 
-                    Thread.sleep(1000);
-                    System.out.println("Mando un messaggio all'altro player");
+                    takeMessage();
 
-                    playerXQueue.add("Mando un messaggio all'altro player " + (countDown.get() + 1));
-                    String message = queue.take();
+                    dispatcher.setMessage(Thread.currentThread().getName() + " is sending message number " + countDown.get());
 
-                    System.out.println("Ho trovo un messaggio dell'altro player:" + message);
                     countDown.decrementAndGet();
                     latch.countDown();
+
+                    putMessage(dispatcher);
                 }
             }
             catch (InterruptedException e)
@@ -63,6 +69,27 @@ public class Initiator extends Thread
         }
 
         System.out.println("Initiator ha terminato il gioco...");
+    }
+
+    /**
+     * @throws InterruptedException
+     */
+    private void takeMessage() throws InterruptedException
+    {
+        Dispatcher dispatcher = queue.take();
+
+        System.out.println(Thread.currentThread().getName() + " ha trovo un messaggio in coda : " + dispatcher.getMessage());
+    }
+
+    /**
+     * @throws InterruptedException
+     */
+    public void putMessage(Dispatcher dispatcher) throws InterruptedException
+    {
+        Thread.sleep(1000);
+        System.out.println(Thread.currentThread().getName() + " is sending a message");
+
+        playerXQueue.add(dispatcher);
     }
 
 }

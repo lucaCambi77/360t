@@ -4,7 +4,9 @@
 package it.cambi.threesixty.players;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import it.cambi.threesixty.message.Dispatcher;
+import it.cambi.threesixty.players.enums.PlayersEnum;
 
 /**
  * @author luca
@@ -13,40 +15,43 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Player extends Thread
 {
 
-    private BlockingQueue<String> queue;
-    private BlockingQueue<String> othersQueue;
-    private AtomicInteger countDown;
+    private BlockingQueue<Dispatcher> queue;
+    private BlockingQueue<Dispatcher> othersQueue;
+    private volatile boolean isGame = true;
 
     private Object lock = new Object();
 
     /**
      * 
      */
-    public Player(BlockingQueue<String> queue, AtomicInteger countDown, BlockingQueue<String> othersQueue)
+    public Player(BlockingQueue<Dispatcher> queue, BlockingQueue<Dispatcher> othersQueue)
     {
         this.queue = queue;
-        this.countDown = countDown;
         this.othersQueue = othersQueue;
     }
 
     @Override
     public void run()
     {
-        System.out.println("Avvio la rumba");
+        Thread.currentThread().setName(PlayersEnum.PLAYERX.getDescription());
 
-        while (countDown.get() >= 0)
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.setPlayerType(PlayersEnum.PLAYERX);
+
+        System.out.println(PlayersEnum.PLAYERX.getDescription() + " thread running");
+
+        while (isGame)
         {
 
             try
             {
                 synchronized (lock)
                 {
-                    System.out.println("Cerco messaggi dell'initiator");
-                    String message = queue.take();
-                    System.out.println("Ho trovo un messaggio :" + message);
+                    takeMessage();
 
-                    othersQueue.add("Messaggio per l'initiator");
-                    System.out.println("Mando un messaggio all'initiator");
+                    dispatcher.setMessage(Thread.currentThread().getName() + " is sending message number ");
+
+                    putMessage(dispatcher);
 
                     Thread.sleep(1000);
 
@@ -55,9 +60,37 @@ public class Player extends Thread
             catch (InterruptedException e)
             {
             }
-
         }
 
+    }
+
+    /**
+     * @throws InterruptedException
+     * 
+     */
+    private void putMessage(Dispatcher dispatcher) throws InterruptedException
+    {
+        System.out.println(Thread.currentThread().getName() + " is sending a message");
+
+        othersQueue.put(dispatcher);
+    }
+
+    /**
+     * @throws InterruptedException
+     */
+    private void takeMessage() throws InterruptedException
+    {
+        System.out.println(Thread.currentThread().getName() + " is waiting for messages");
+        Dispatcher dispatcher = queue.take();
+        if (!dispatcher.isGame())
+            stopGame();
+
+        System.out.println(Thread.currentThread().getName() + " ha trovo un messaggio : " + dispatcher.getMessage());
+    }
+
+    private void stopGame()
+    {
+        isGame = false;
     }
 
 }

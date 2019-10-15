@@ -23,22 +23,16 @@ public class DataServer
     private LinkedBlockingQueue<Object> messages;
     private ServerSocket serverSocket;
 
-    public static void main(String[] args) throws IOException
-    {
-        DataServer server = new DataServer();
-        server.start();
-    }
-
     private AtomicInteger countDown = new AtomicInteger(9);
 
     /**
      * @throws IOException
      */
-    private void start() throws IOException
+    public DataServer(int port) throws IOException
     {
         clientList = new ArrayList<ConnectionToClient>();
         messages = new LinkedBlockingQueue<Object>();
-        serverSocket = new ServerSocket(59090);
+        serverSocket = new ServerSocket(port);
 
         Thread accept = new Thread()
         {
@@ -48,8 +42,11 @@ public class DataServer
                 {
                     try
                     {
+                        System.out.println("Server listening on port: " + port);
+
                         Socket s = serverSocket.accept();
                         clientList.add(new ConnectionToClient(s));
+                        System.out.println("Connected clients ... " + clientList.size());
                     }
                     catch (IOException e)
                     {
@@ -71,7 +68,7 @@ public class DataServer
                     {
                         Object message = messages.take();
                         // Do some handling here...
-                        System.out.println("Message Received: " + message);
+                        System.out.println("Server says ... Message Received: " + message);
                     }
                     catch (InterruptedException e)
                     {
@@ -82,11 +79,6 @@ public class DataServer
 
         messageHandling.start();
 
-        while (countDown.get() >= 0)
-        {
-        }
-
-        stop();
     }
 
     public void stop() throws IOException
@@ -104,7 +96,7 @@ public class DataServer
         {
             this.socket = socket;
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream());
+            out = new PrintWriter(socket.getOutputStream(), true);
 
             Thread read = new Thread()
             {
@@ -128,10 +120,21 @@ public class DataServer
             read.start();
         }
 
-        public void write(Object obj)
+        public void write(String obj)
         {
 
             out.println(obj);
         }
+    }
+
+    public void sendToOne(int index, String message) throws IndexOutOfBoundsException
+    {
+        clientList.get(index).write(message);
+    }
+
+    public void sendToAll(String message)
+    {
+        for (ConnectionToClient client : clientList)
+            client.write(message);
     }
 }
