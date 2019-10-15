@@ -26,10 +26,9 @@ public class Main extends AbstractMain
 
     /**
      * @param args
-     * @throws InterruptedException
-     * @throws IOException
+     * @throws Exception
      */
-    public static void main(String[] args) throws InterruptedException, IOException
+    public static void main(String[] args) throws Exception
     {
         if ("THREAD".equals(args[0]))
         {
@@ -56,7 +55,7 @@ public class Main extends AbstractMain
 
     }
 
-    public void playSocket() throws InterruptedException, IOException
+    public void playSocket() throws Exception
     {
 
         InitiatorClient initiatorClient = new InitiatorClient("127.0.0.1", Constant.socketPort, getLatch(), getCountDown());

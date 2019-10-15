@@ -3,7 +3,6 @@
  */
 package it.cambi.threesixty.socket.client;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -18,8 +17,9 @@ public class InitiatorClient extends AbstractClient
 {
     private AtomicInteger countDown;
     private CountDownLatch latch;
+    private int sentMessages = 1;
 
-    public InitiatorClient(String IPAddress, int port, CountDownLatch latchIn, AtomicInteger countDownIn) throws IOException
+    public InitiatorClient(String IPAddress, int port, CountDownLatch latchIn, AtomicInteger countDownIn) throws Exception
     {
         setSocket(new Socket(IPAddress, port));
         setMessages(new LinkedBlockingQueue<SocketDispatcher>());
@@ -49,12 +49,13 @@ public class InitiatorClient extends AbstractClient
 
                         Thread.sleep(1000);
 
-                        dispatcherInitiator.setMessage("Initiator is sending message number ");
+                        dispatcherInitiator.setMessage("Initiator is sending message number " + ++sentMessages);
 
                         send(dispatcherInitiator);
                     }
                     catch (InterruptedException | JsonProcessingException e)
                     {
+                        throw new RuntimeException(e);
                     }
                 }
             }

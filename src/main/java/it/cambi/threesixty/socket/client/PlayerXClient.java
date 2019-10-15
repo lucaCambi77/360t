@@ -3,7 +3,6 @@
  */
 package it.cambi.threesixty.socket.client;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -14,8 +13,9 @@ import it.cambi.threesixty.players.enums.PlayersEnum;
 
 public class PlayerXClient extends AbstractClient
 {
+    private int sentMessages = 0;
 
-    public PlayerXClient(String IPAddress, int port) throws IOException
+    public PlayerXClient(String IPAddress, int port) throws Exception
     {
         setSocket(new Socket(IPAddress, port));
         setMessages(new LinkedBlockingQueue<SocketDispatcher>());
@@ -37,12 +37,13 @@ public class PlayerXClient extends AbstractClient
 
                         System.out.println("PlayerX says ... Message Received: " + message.getMessage());
 
-                        dispatcherInitiator.setMessage("PlayerX is sending message number ");
+                        dispatcherInitiator.setMessage("PlayerX is sending message number " + ++sentMessages);
 
                         send(dispatcherInitiator);
                     }
                     catch (InterruptedException | JsonProcessingException e)
                     {
+                        throw new RuntimeException(e);
                     }
                 }
             }

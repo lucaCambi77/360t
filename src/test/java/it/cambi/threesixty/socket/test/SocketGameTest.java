@@ -5,8 +5,6 @@ package it.cambi.threesixty.socket.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.Test;
 
 import it.cambi.threesixty.AbstractMain;
@@ -25,7 +23,7 @@ public class SocketGameTest extends AbstractMain
     private Main main = new Main();
 
     @Test
-    public void testSocketGame() throws IOException, InterruptedException
+    public void testSocketGame() throws Exception
     {
 
         main.startServer();

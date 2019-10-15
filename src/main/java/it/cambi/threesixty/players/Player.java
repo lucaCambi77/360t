@@ -50,11 +50,10 @@ public class Player extends Thread
                 {
                     takeMessage();
 
-                    dispatcher.setMessage(Thread.currentThread().getName() + " already sent " + sentMessages + " messages");
+                    dispatcher.setMessage(Thread.currentThread().getName() + " is sending message n. " + ++sentMessages);
 
                     putMessage(dispatcher);
 
-                    sentMessages++;
                     Thread.sleep(1000);
 
                 }

@@ -61,8 +61,7 @@ public class Initiator extends Thread
 
                     Thread.sleep(1000);
 
-                    dispatcher.setMessage(Thread.currentThread().getName() + " already sent " + sentMessages + " messages");
-                    sentMessages++;
+                    dispatcher.setMessage(Thread.currentThread().getName() + " in sending message n." + ++sentMessages);
 
                     putMessage(dispatcher);
 
