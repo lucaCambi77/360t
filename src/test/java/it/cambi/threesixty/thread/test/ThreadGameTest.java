@@ -20,7 +20,6 @@ import it.cambi.threesixty.main.Main;
 import it.cambi.threesixty.message.Dispatcher;
 import it.cambi.threesixty.players.Initiator;
 import it.cambi.threesixty.players.Player;
-import it.cambi.threesixty.players.enums.PlayersEnum;
 
 /**
  * @author luca
@@ -38,19 +37,13 @@ public class ThreadGameTest
     @Test
     public void testInput() throws InterruptedException
     {
-        CountDownLatch latch = new CountDownLatch(Constant.countDownlLatch);
+        CountDownLatch latch = new CountDownLatch(Constant.numberOfMessages);
 
         Initiator initiator = Mockito.spy(new Initiator(queue, countDown, playerXQueue, latch));
-        Dispatcher dispatcher = new Dispatcher();
-        dispatcher.setPlayerType(PlayersEnum.INITIATOR);
-        dispatcher.setMessage("Hello from Initiator");
-        initiator.putMessage(dispatcher);
 
         Player otherPlayer = Mockito.spy(new Player(playerXQueue, queue));
 
-        main.play(initiator, otherPlayer);
-
-        latch.await();
+        main.play(initiator, otherPlayer, latch);
 
         assertEquals(0, countDown.get());
     }

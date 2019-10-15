@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +19,7 @@ import it.cambi.threesixty.players.enums.PlayersEnum;
 
 public class InitiatorClient
 {
+    private AtomicInteger countDown = new AtomicInteger(10);
     private ConnectionToServer server;
     private LinkedBlockingQueue<SocketDispatcher> messages;
     private Socket socket;
@@ -37,7 +39,7 @@ public class InitiatorClient
         {
             public void run()
             {
-                while (true)
+                while (countDown.get() > 0)
                 {
                     try
                     {
@@ -46,6 +48,8 @@ public class InitiatorClient
                         System.out.println("Initiator says ... Message Received: " + message.getMessage());
 
                         dispatcherInitiator.setMessage("Initiator is sending message number ");
+
+                        countDown.decrementAndGet();
 
                         send(dispatcherInitiator);
                     }

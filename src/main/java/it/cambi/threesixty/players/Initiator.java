@@ -55,12 +55,13 @@ public class Initiator extends Thread
 
                     takeMessage();
 
-                    dispatcher.setMessage(Thread.currentThread().getName() + " is sending message number " + countDown.get());
-
                     countDown.decrementAndGet();
                     latch.countDown();
+                    
+                    dispatcher.setMessage(Thread.currentThread().getName() + " is sending message number " + countDown.get());
 
                     putMessage(dispatcher);
+
 
                     Thread.sleep(1000);
                 }
@@ -70,8 +71,6 @@ public class Initiator extends Thread
             }
         }
 
-        System.out.println("Initiator ha terminato il gioco...");
-        latch.countDown();
     }
 
     /**

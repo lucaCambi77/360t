@@ -24,6 +24,7 @@ public class Main
     private BlockingQueue<Dispatcher> playerXQueue = new ArrayBlockingQueue<>(Constant.numberOfMessages);
     private AtomicInteger countDown = new AtomicInteger(Constant.numberOfMessages);
 
+    private CountDownLatch latch = new CountDownLatch(Constant.numberOfMessages);
     private static Main instance = new Main();
 
     /**
@@ -43,22 +44,22 @@ public class Main
      */
     private void play() throws InterruptedException
     {
+        play(new Initiator(queue, countDown, playerXQueue, latch), new Player(playerXQueue, queue), latch);
+    }
 
-        Initiator initiator = new Initiator(queue, countDown, playerXQueue, new CountDownLatch(Constant.countDownlLatch));
-        Player playerX = new Player(playerXQueue, queue);
-
+    public void play(Initiator initiator, Player playerX, CountDownLatch latch) throws InterruptedException
+    {
         Dispatcher dispatcher = new Dispatcher();
         dispatcher.setPlayerType(PlayersEnum.INITIATOR);
         dispatcher.setMessage("Hello from Initiator");
         initiator.putMessage(dispatcher);
 
-        play(initiator, playerX);
-    }
-
-    public void play(Initiator initiator, Player playerX)
-    {
-
         initiator.start();
         playerX.start();
+
+        latch.await();
+
+        System.out.println(PlayersEnum.INITIATOR.getDescription() + " ha terminato il gioco...");
+
     }
 }
