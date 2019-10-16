@@ -1,49 +1,46 @@
 /**
  * 
  */
-package it.cambi.threesixty.socket.client;
+package it.cambi.threesixtyt.socket.client;
 
 import java.net.Socket;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import it.cambi.threesixty.message.Dispatcher;
-import it.cambi.threesixty.message.SocketDispatcher;
-import it.cambi.threesixty.players.Player;
-import it.cambi.threesixty.players.enums.PlayersEnum;
+import it.cambi.threesixtyt.message.Dispatcher;
+import it.cambi.threesixtyt.message.SocketDispatcher;
+import it.cambi.threesixtyt.players.Player;
+import it.cambi.threesixtyt.players.enums.PlayersEnum;
+import it.cambi.threesixtyt.socket.server.SocketServer;
 
 /**
- * 
  * @author luca
+ * 
+ *         PlayerX client instance communicating with {@link InitiatorClient} over a {@link SocketServer}
+ * 
+ *         Similar to the game based on threads, messages are processes by a BlockingQueue but shared over the network with sockets
  *
  */
-public class InitiatorClient extends AbstractClient implements Player
+public class PlayerXClient extends AbstractClient implements Player
 {
-    private AtomicInteger countDown;
-    private CountDownLatch latch;
-    private int sentMessages = 1;
+    private int sentMessages = 0;
 
-    public InitiatorClient(String IPAddress, int port, CountDownLatch latchIn, AtomicInteger countDownIn) throws Exception
+    public PlayerXClient(String IPAddress, int port) throws Exception
     {
         setSocket(new Socket(IPAddress, port));
         setMessages(new LinkedBlockingQueue<SocketDispatcher>());
         setServer(new ConnectionToServer(getSocket()));
 
-        this.latch = latchIn;
-        this.countDown = countDownIn;
-
         SocketDispatcher dispatcherInitiator = new SocketDispatcher();
-        dispatcherInitiator.setPlayerType(PlayersEnum.INITIATOR);
+        dispatcherInitiator.setPlayerType(PlayersEnum.PLAYERX);
         dispatcherInitiator.setSocket(getSocketString());
 
         Thread messageHandling = new Thread()
         {
             public void run()
             {
-                while (countDown.get() > 0)
+                while (true)
                 {
                     try
                     {
@@ -59,6 +56,7 @@ public class InitiatorClient extends AbstractClient implements Player
             }
 
         };
+
         messageHandling.setDaemon(true);
         messageHandling.start();
     }
@@ -66,7 +64,7 @@ public class InitiatorClient extends AbstractClient implements Player
     @Override
     public <T extends Dispatcher> void putMessage(T dispatcher) throws InterruptedException, JsonProcessingException
     {
-        dispatcher.setMessage("Initiator is sending message number " + ++sentMessages);
+        dispatcher.setMessage("PlayerX is sending message number " + ++sentMessages);
 
         send((SocketDispatcher) dispatcher);
 
@@ -77,12 +75,8 @@ public class InitiatorClient extends AbstractClient implements Player
     {
         SocketDispatcher message = getMessages().take();
 
-        System.out.println("Initiator says ... Message Received: " + message.getMessage());
+        System.out.println("PlayerX says ... Message Received: " + message.getMessage());
 
-        countDown.decrementAndGet();
-        latch.countDown();
-
-        Thread.sleep(1000);
     }
 
 }

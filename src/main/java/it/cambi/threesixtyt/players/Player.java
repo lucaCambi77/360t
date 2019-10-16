@@ -1,11 +1,11 @@
 /**
  * 
  */
-package it.cambi.threesixty.players;
+package it.cambi.threesixtyt.players;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import it.cambi.threesixty.message.Dispatcher;
+import it.cambi.threesixtyt.message.Dispatcher;
 
 /**
  * @author luca

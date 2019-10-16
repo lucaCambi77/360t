@@ -1,17 +1,17 @@
 /**
  * 
  */
-package it.cambi.threesixty.socket.test;
+package it.cambi.threesixtyt.socket.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import it.cambi.threesixty.AbstractMain;
-import it.cambi.threesixty.Main;
-import it.cambi.threesixty.constant.Constant;
-import it.cambi.threesixty.socket.client.InitiatorClient;
-import it.cambi.threesixty.socket.client.PlayerXClient;
+import it.cambi.threesixtyt.AbstractMain;
+import it.cambi.threesixtyt.Main;
+import it.cambi.threesixtyt.constant.Constant;
+import it.cambi.threesixtyt.socket.client.InitiatorClient;
+import it.cambi.threesixtyt.socket.client.PlayerXClient;
 
 /**
  * @author luca

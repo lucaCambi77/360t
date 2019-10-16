@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.cambi.threesixty.socket.server;
+package it.cambi.threesixtyt.socket.server;
 
 import java.io.BufferedReader;
 /**
@@ -21,7 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.cambi.threesixty.message.SocketDispatcher;
+import it.cambi.threesixtyt.message.SocketDispatcher;
 
 /**
  * 

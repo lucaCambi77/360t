@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.cambi.threesixty.constant;
+package it.cambi.threesixtyt.constant;
 
 /**
  * @author luca

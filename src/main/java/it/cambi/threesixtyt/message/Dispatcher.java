@@ -1,9 +1,9 @@
 /**
  * 
  */
-package it.cambi.threesixty.message;
+package it.cambi.threesixtyt.message;
 
-import it.cambi.threesixty.players.enums.PlayersEnum;
+import it.cambi.threesixtyt.players.enums.PlayersEnum;
 
 /**
  * @author luca

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.cambi.threesixty.message;
+package it.cambi.threesixtyt.message;
 
 /**
  * @author luca

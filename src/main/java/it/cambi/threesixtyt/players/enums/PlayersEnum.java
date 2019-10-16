@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.cambi.threesixty.players.enums;
+package it.cambi.threesixtyt.players.enums;
 
 /**
  * @author luca

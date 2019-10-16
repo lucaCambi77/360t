@@ -1,15 +1,15 @@
 /**
  * 
  */
-package it.cambi.threesixty;
+package it.cambi.threesixtyt;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.cambi.threesixty.constant.Constant;
-import it.cambi.threesixty.message.Dispatcher;
+import it.cambi.threesixtyt.constant.Constant;
+import it.cambi.threesixtyt.message.Dispatcher;
 
 /**
  * @author luca

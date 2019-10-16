@@ -72,7 +72,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>it.cambi.threesixty.Main</mainClass>
+									<mainClass>it.cambi.threesixtyt.Main</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>

@@ -1,20 +1,20 @@
 /**
  * 
  */
-package it.cambi.threesixty;
+package it.cambi.threesixtyt;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-import it.cambi.threesixty.constant.Constant;
-import it.cambi.threesixty.message.Dispatcher;
-import it.cambi.threesixty.message.SocketDispatcher;
-import it.cambi.threesixty.players.Initiator;
-import it.cambi.threesixty.players.PlayerX;
-import it.cambi.threesixty.players.enums.PlayersEnum;
-import it.cambi.threesixty.socket.client.InitiatorClient;
-import it.cambi.threesixty.socket.client.PlayerXClient;
-import it.cambi.threesixty.socket.server.SocketServer;
+import it.cambi.threesixtyt.constant.Constant;
+import it.cambi.threesixtyt.message.Dispatcher;
+import it.cambi.threesixtyt.message.SocketDispatcher;
+import it.cambi.threesixtyt.players.Initiator;
+import it.cambi.threesixtyt.players.PlayerX;
+import it.cambi.threesixtyt.players.enums.PlayersEnum;
+import it.cambi.threesixtyt.socket.client.InitiatorClient;
+import it.cambi.threesixtyt.socket.client.PlayerXClient;
+import it.cambi.threesixtyt.socket.server.SocketServer;
 
 /**
  * @author luca
@@ -23,7 +23,7 @@ import it.cambi.threesixty.socket.server.SocketServer;
  * 
  *         {@link #playSocket} will start a game simulating two client communicating over a network with sockets
  * 
- *         {@link #playThread} will start a game of two Thread communicating in with queues
+ *         {@link #playThread} will start a game of two simple Thread communicating with queues
  * 
  *         Both games anyway are based on a count down that will stop after required condition is satisfied for the initiator.
  * 

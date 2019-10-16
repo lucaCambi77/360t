@@ -1,12 +1,12 @@
 /**
  * 
  */
-package it.cambi.threesixty.players;
+package it.cambi.threesixtyt.players;
 
 import java.util.concurrent.BlockingQueue;
 
-import it.cambi.threesixty.message.Dispatcher;
-import it.cambi.threesixty.players.enums.PlayersEnum;
+import it.cambi.threesixtyt.message.Dispatcher;
+import it.cambi.threesixtyt.players.enums.PlayersEnum;
 
 /**
  * @author luca

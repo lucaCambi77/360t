@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.cambi.threesixty.thread.test;
+package it.cambi.threesixtyt.thread.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,10 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import it.cambi.threesixty.AbstractMain;
-import it.cambi.threesixty.Main;
-import it.cambi.threesixty.players.Initiator;
-import it.cambi.threesixty.players.PlayerX;
+import it.cambi.threesixtyt.AbstractMain;
+import it.cambi.threesixtyt.Main;
+import it.cambi.threesixtyt.players.Initiator;
+import it.cambi.threesixtyt.players.PlayerX;
 
 /**
  * @author luca

@@ -1,14 +1,14 @@
 /**
  * 
  */
-package it.cambi.threesixty.players;
+package it.cambi.threesixtyt.players;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.cambi.threesixty.message.Dispatcher;
-import it.cambi.threesixty.players.enums.PlayersEnum;
+import it.cambi.threesixtyt.message.Dispatcher;
+import it.cambi.threesixtyt.players.enums.PlayersEnum;
 
 /**
  * @author luca
@@ -63,7 +63,7 @@ public class Initiator extends Thread implements Player
 
                     Thread.sleep(1000);
 
-                    dispatcher.setMessage(Thread.currentThread().getName() + " in sending message n." + ++sentMessages);
+                    dispatcher.setMessage(Thread.currentThread().getName() + " is sending message n." + ++sentMessages);
 
                     putMessage(dispatcher);
 
